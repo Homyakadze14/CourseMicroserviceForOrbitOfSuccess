@@ -1,0 +1,9 @@
+env: "local"  
+
+GRPC:
+  port: 5000
+  timeout: 5s
+
+database:
+  url: "postgres://postgres:postgres@localhost:5432/authservice"  
+  pool_max: 2

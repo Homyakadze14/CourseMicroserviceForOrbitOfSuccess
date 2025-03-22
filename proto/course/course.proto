@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+option go_package = "../gen;coursev1";
+
+import "google/protobuf/empty.proto";
+
+service CourseService {
+    rpc Get(google.protobuf.Empty) returns (GetResponse); 
+    rpc Create(Course) returns (SuccessResponse);
+    rpc Update(Course) returns (SuccessResponse);
+    rpc Delete(DeleteRequest) returns (SuccessResponse); 
+}
+
+message GetResponse {
+    repeated Course courses = 1;
+}
+
+message Course {
+    int32 id = 1;  
+    string title = 2;  
+    string description = 3;  
+    string full_description = 4;  
+    string work = 5;  
+    string difficulty = 6; 
+    int32 duration = 7;  
+    string image = 8;  // URL to the course image
+    repeated Theme themes = 9;  
+}
+
+message Theme {
+    int32 id = 1;  
+    string title = 2; 
+    repeated Lesson lessons = 3; 
+}
+
+message Lesson {
+    int32 id = 1; 
+    string title = 2; 
+    string type = 3;
+    int32 duration = 4; 
+    bool completed = 5; 
+    string content = 6; 
+    string practice_type = 7;  
+    string task = 8; 
+}
+
+message PassedLesson {
+    int32 user_id = 1; 
+    int32 course_id = 2;
+    int32 theme_id = 3;
+    int32 lesson_id = 4;
+}
+
+message SuccessResponse {
+    bool success = 1;  
+}
+
+message DeleteRequest {
+    int32 course_id = 1; 
+}
