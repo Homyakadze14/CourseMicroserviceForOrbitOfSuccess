@@ -7,6 +7,7 @@ import (
 
 	grpcapp "github.com/Homyakadze14/CourseMicroserviceForOrbitOfSuccess/internal/app/grpc"
 	"github.com/Homyakadze14/CourseMicroserviceForOrbitOfSuccess/internal/config"
+	repositories "github.com/Homyakadze14/CourseMicroserviceForOrbitOfSuccess/internal/repositories/postgresql"
 	"github.com/Homyakadze14/CourseMicroserviceForOrbitOfSuccess/internal/services"
 	"github.com/Homyakadze14/CourseMicroserviceForOrbitOfSuccess/pkg/postgres"
 )
@@ -28,9 +29,10 @@ func Run(
 	}
 
 	// Repository
+	crsRepo := repositories.NewCourseRepository(pg)
 
 	// Services
-	course := services.NewCourseService(log)
+	course := services.NewCourseService(log, crsRepo)
 
 	// GRPC
 	gRPCServer := grpcapp.New(log, course, cfg.GRPC.Port)

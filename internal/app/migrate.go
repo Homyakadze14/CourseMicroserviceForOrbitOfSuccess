@@ -25,7 +25,12 @@ func init() {
 		log.Fatalf("migrate: environment variable not declared: PG_URL")
 	}
 
-	databaseURL += "?sslmode=disable"
+	migrationTable, ok := os.LookupEnv("PG_MIGRATION_TABLE")
+	if !ok || len(migrationTable) == 0 {
+		log.Fatalf("migrate: environment variable not declared: PG_MIGRATION_TABLE")
+	}
+
+	databaseURL += "?x-migrations-table=" + migrationTable + "&sslmode=disable"
 
 	var (
 		attempts = _defaultAttempts

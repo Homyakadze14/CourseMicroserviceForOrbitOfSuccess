@@ -16,32 +16,35 @@ message GetResponse {
 }
 
 message Course {
-    int32 id = 1;  
+    optional int32 id = 1;  
     string title = 2;  
     string description = 3;  
     string full_description = 4;  
     string work = 5;  
     string difficulty = 6; 
     int32 duration = 7;  
-    string image = 8;  // URL to the course image
+    string image = 8;
     repeated Theme themes = 9;  
 }
 
 message Theme {
-    int32 id = 1;  
-    string title = 2; 
-    repeated Lesson lessons = 3; 
+    optional int32 id = 1;  
+    optional int32 course_id = 2;  
+    string title = 3; 
+    repeated Lesson lessons = 4; 
 }
 
 message Lesson {
-    int32 id = 1; 
-    string title = 2; 
-    string type = 3;
-    int32 duration = 4; 
-    bool completed = 5; 
-    string content = 6; 
-    string practice_type = 7;  
-    string task = 8; 
+    optional int32 id = 1;  
+    optional int32 course_id = 2; 
+    optional int32 theme_id = 3;
+    string title = 4; 
+    string type = 5;
+    int32 duration = 6; 
+    optional bool completed = 7; 
+    string content = 8; 
+    string practice_type = 9;  
+    string task = 10; 
 }
 
 message PassedLesson {

@@ -5,5 +5,5 @@ GRPC:
   timeout: 5s
 
 database:
-  url: "postgres://postgres:postgres@localhost:5432/authservice"  
+  url: "postgres://postgres:postgres@localhost:5432/authmicroservice"  
   pool_max: 2
