@@ -25,6 +25,9 @@ type CourseRepo interface {
 	CreateTheme(ctx context.Context, theme *entities.Theme) (id int, err error)
 	CreateLesson(ctx context.Context, lesson *entities.Lesson) (id int, err error)
 	GetAllCourses(ctx context.Context) ([]*entities.Course, error)
+	GetCourse(ctx context.Context, id int) (*entities.Course, error)
+	GetThemes(ctx context.Context, cid int) ([]*entities.Theme, error)
+	GetLessons(ctx context.Context, cid, tid int) ([]*entities.Lesson, error)
 }
 
 func NewCourseService(
@@ -107,4 +110,61 @@ func (s *CourseService) GetAllCourses(ctx context.Context) ([]*entities.Course, 
 	log.Info("courses successfully geted")
 
 	return courses, err
+}
+
+func (s *CourseService) GetCourse(ctx context.Context, id int) (*entities.Course, error) {
+	const op = "Course.GetCourse"
+
+	log := s.log.With(
+		slog.String("op", op),
+		slog.Int("id", id),
+	)
+
+	log.Info("trying to get course")
+	course, err := s.crsRepo.GetCourse(ctx, id)
+	if err != nil {
+		log.Error(err.Error())
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+	log.Info("course successfully geted")
+
+	return course, err
+}
+
+func (s *CourseService) GetThemes(ctx context.Context, cid int) ([]*entities.Theme, error) {
+	const op = "Course.GetThemes"
+
+	log := s.log.With(
+		slog.String("op", op),
+		slog.Int("cid", cid),
+	)
+
+	log.Info("trying to get themes")
+	themes, err := s.crsRepo.GetThemes(ctx, cid)
+	if err != nil {
+		log.Error(err.Error())
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+	log.Info("themes successfully geted")
+
+	return themes, err
+}
+
+func (s *CourseService) GetLessons(ctx context.Context, cid, tid int) ([]*entities.Lesson, error) {
+	const op = "Course.GetLessons"
+
+	log := s.log.With(
+		slog.String("op", op),
+		slog.Int("cid", cid),
+	)
+
+	log.Info("trying to get lessons")
+	lessons, err := s.crsRepo.GetLessons(ctx, cid, tid)
+	if err != nil {
+		log.Error(err.Error())
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+	log.Info("lessons successfully geted")
+
+	return lessons, err
 }

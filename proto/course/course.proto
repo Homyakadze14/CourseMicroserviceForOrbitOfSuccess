@@ -6,7 +6,8 @@ import "google/protobuf/empty.proto";
 
 service CourseService {
     rpc GetAll(google.protobuf.Empty) returns (GetResponse); 
-    rpc Create(CreateResponse) returns (SuccessResponse);
+    rpc Get(GetCourseRequest) returns (GetCourseResponse); 
+    rpc Create(CreateRequest) returns (SuccessResponse);
 }
 
 
@@ -15,7 +16,6 @@ message CreateLesson {
     string type = 2;
     int32 duration = 3; 
     string content = 4; 
-    string practice_type = 5;  
     string task = 6; 
 }
 
@@ -24,7 +24,7 @@ message CreateTheme {
     repeated CreateLesson lessons = 2; 
 }
 
-message CreateResponse {
+message CreateRequest {
     string title = 1;  
     string description = 2;  
     string full_description = 3;  
@@ -52,4 +52,36 @@ message GetResponse {
 
 message SuccessResponse {
     bool success = 1;  
+}
+
+
+message GetCourseRequest {
+    int32 id = 1;
+}
+
+message GetLesson {
+    int32 id = 1;
+    string title = 2; 
+    string type = 3;
+    int32 duration = 4; 
+    string content = 5; 
+    string task = 7; 
+}
+
+message GetTheme {
+    int32 id = 1;
+    string title = 2; 
+    repeated GetLesson lessons = 3; 
+}
+
+message GetCourseResponse {
+    int32 id = 1;
+    string title = 2;  
+    string description = 3;  
+    string full_description = 4;  
+    string work = 5;  
+    string difficulty = 6; 
+    int32 duration = 7;  
+    string image = 8;
+    repeated GetTheme theme = 9;
 }

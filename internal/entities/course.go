@@ -18,13 +18,12 @@ type Theme struct {
 }
 
 type Lesson struct {
-	ID           int
-	CourseID     int
-	ThemeID      int
-	Title        string
-	Type         string
-	Duration     int32
-	Content      string
-	PracticeType string
-	Task         string
+	ID       int
+	CourseID int
+	ThemeID  int
+	Title    string
+	Type     string
+	Duration int32
+	Content  string
+	Task     string
 }

@@ -21,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	CourseService_GetAll_FullMethodName = "/CourseService/GetAll"
+	CourseService_Get_FullMethodName    = "/CourseService/Get"
 	CourseService_Create_FullMethodName = "/CourseService/Create"
 )
 
@@ -29,7 +30,8 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CourseServiceClient interface {
 	GetAll(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetResponse, error)
-	Create(ctx context.Context, in *CreateResponse, opts ...grpc.CallOption) (*SuccessResponse, error)
+	Get(ctx context.Context, in *GetCourseRequest, opts ...grpc.CallOption) (*GetCourseResponse, error)
+	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*SuccessResponse, error)
 }
 
 type courseServiceClient struct {
@@ -50,7 +52,17 @@ func (c *courseServiceClient) GetAll(ctx context.Context, in *emptypb.Empty, opt
 	return out, nil
 }
 
-func (c *courseServiceClient) Create(ctx context.Context, in *CreateResponse, opts ...grpc.CallOption) (*SuccessResponse, error) {
+func (c *courseServiceClient) Get(ctx context.Context, in *GetCourseRequest, opts ...grpc.CallOption) (*GetCourseResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetCourseResponse)
+	err := c.cc.Invoke(ctx, CourseService_Get_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *courseServiceClient) Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*SuccessResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(SuccessResponse)
 	err := c.cc.Invoke(ctx, CourseService_Create_FullMethodName, in, out, cOpts...)
@@ -65,7 +77,8 @@ func (c *courseServiceClient) Create(ctx context.Context, in *CreateResponse, op
 // for forward compatibility.
 type CourseServiceServer interface {
 	GetAll(context.Context, *emptypb.Empty) (*GetResponse, error)
-	Create(context.Context, *CreateResponse) (*SuccessResponse, error)
+	Get(context.Context, *GetCourseRequest) (*GetCourseResponse, error)
+	Create(context.Context, *CreateRequest) (*SuccessResponse, error)
 	mustEmbedUnimplementedCourseServiceServer()
 }
 
@@ -79,7 +92,10 @@ type UnimplementedCourseServiceServer struct{}
 func (UnimplementedCourseServiceServer) GetAll(context.Context, *emptypb.Empty) (*GetResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAll not implemented")
 }
-func (UnimplementedCourseServiceServer) Create(context.Context, *CreateResponse) (*SuccessResponse, error) {
+func (UnimplementedCourseServiceServer) Get(context.Context, *GetCourseRequest) (*GetCourseResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
+}
+func (UnimplementedCourseServiceServer) Create(context.Context, *CreateRequest) (*SuccessResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
 }
 func (UnimplementedCourseServiceServer) mustEmbedUnimplementedCourseServiceServer() {}
@@ -121,8 +137,26 @@ func _CourseService_GetAll_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CourseService_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCourseRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CourseServiceServer).Get(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CourseService_Get_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CourseServiceServer).Get(ctx, req.(*GetCourseRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _CourseService_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateResponse)
+	in := new(CreateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -134,7 +168,7 @@ func _CourseService_Create_Handler(srv interface{}, ctx context.Context, dec fun
 		FullMethod: CourseService_Create_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CourseServiceServer).Create(ctx, req.(*CreateResponse))
+		return srv.(CourseServiceServer).Create(ctx, req.(*CreateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -149,6 +183,10 @@ var CourseService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetAll",
 			Handler:    _CourseService_GetAll_Handler,
+		},
+		{
+			MethodName: "Get",
+			Handler:    _CourseService_Get_Handler,
 		},
 		{
 			MethodName: "Create",

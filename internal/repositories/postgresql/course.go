@@ -97,3 +97,66 @@ func (r *CourseRepository) GetAllCourses(ctx context.Context) ([]*entities.Cours
 
 	return courses, nil
 }
+
+func (r *CourseRepository) GetCourse(ctx context.Context, id int) (*entities.Course, error) {
+	const op = "repositories.CourseRepository.GetCourse"
+
+	row := r.Pool.QueryRow(
+		ctx,
+		"SELECT id, title, description, full_descritpion, work, difficulty, duration, image FROM course WHERE id=$1",
+		id)
+
+	var obj entities.Course
+	err := row.Scan(&obj.ID, &obj.Title, &obj.Description, &obj.FullDescription,
+		&obj.Work, &obj.Difficulty, &obj.Duration, &obj.Image)
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+
+	return &obj, nil
+}
+
+func (r *CourseRepository) GetThemes(ctx context.Context, cid int) ([]*entities.Theme, error) {
+	const op = "repositories.CourseRepository.GetThemes"
+	arraySize := 20
+	rows, err := r.Pool.Query(ctx, "SELECT * FROM theme WHERE course_id=$1", cid)
+
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+
+	themes := make([]*entities.Theme, 0, arraySize)
+	for rows.Next() {
+		var obj entities.Theme
+		err := rows.Scan(&obj.ID, &obj.CourseID, &obj.Title)
+		if err != nil {
+			return nil, fmt.Errorf("%s: %w", op, err)
+		}
+		themes = append(themes, &obj)
+	}
+
+	return themes, nil
+}
+
+func (r *CourseRepository) GetLessons(ctx context.Context, cid, tid int) ([]*entities.Lesson, error) {
+	const op = "repositories.CourseRepository.GetLessons"
+	arraySize := 20
+	rows, err := r.Pool.Query(ctx, "SELECT * FROM lesson WHERE course_id=$1 AND theme_id=$2", cid, tid)
+
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+
+	lessons := make([]*entities.Lesson, 0, arraySize)
+	for rows.Next() {
+		var obj entities.Lesson
+		err := rows.Scan(&obj.ID, &obj.CourseID, &obj.ThemeID, &obj.Title,
+			&obj.Type, &obj.Duration, &obj.Content, &obj.Task)
+		if err != nil {
+			return nil, fmt.Errorf("%s: %w", op, err)
+		}
+		lessons = append(lessons, &obj)
+	}
+
+	return lessons, nil
+}
