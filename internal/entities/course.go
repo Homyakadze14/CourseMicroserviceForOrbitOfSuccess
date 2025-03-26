@@ -24,7 +24,6 @@ type Lesson struct {
 	Title        string
 	Type         string
 	Duration     int32
-	Completed    bool
 	Content      string
 	PracticeType string
 	Task         string

@@ -24,6 +24,7 @@ type CourseRepo interface {
 	Create(ctx context.Context, course *entities.Course) (id int, err error)
 	CreateTheme(ctx context.Context, theme *entities.Theme) (id int, err error)
 	CreateLesson(ctx context.Context, lesson *entities.Lesson) (id int, err error)
+	GetAllCourses(ctx context.Context) ([]*entities.Course, error)
 }
 
 func NewCourseService(
@@ -88,4 +89,22 @@ func (s *CourseService) CreateLesson(ctx context.Context, obj *entities.Lesson) 
 	log.Info("successfully created lesson")
 
 	return id, err
+}
+
+func (s *CourseService) GetAllCourses(ctx context.Context) ([]*entities.Course, error) {
+	const op = "Course.GetAllCourses"
+
+	log := s.log.With(
+		slog.String("op", op),
+	)
+
+	log.Info("trying to get courses")
+	courses, err := s.crsRepo.GetAllCourses(ctx)
+	if err != nil {
+		log.Error(err.Error())
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+	log.Info("courses successfully geted")
+
+	return courses, err
 }

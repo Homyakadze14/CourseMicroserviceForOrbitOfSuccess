@@ -74,3 +74,26 @@ func (r *CourseRepository) CreateLesson(ctx context.Context, obj *entities.Lesso
 
 	return id, nil
 }
+
+func (r *CourseRepository) GetAllCourses(ctx context.Context) ([]*entities.Course, error) {
+	const op = "repositories.CourseRepository.GetAllCourses"
+	arraySize := 20
+	rows, err := r.Pool.Query(ctx, "SELECT * FROM course")
+
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+
+	courses := make([]*entities.Course, 0, arraySize)
+	for rows.Next() {
+		var obj entities.Course
+		err := rows.Scan(&obj.ID, &obj.Title, &obj.Description, &obj.FullDescription,
+			&obj.Work, &obj.Difficulty, &obj.Duration, &obj.Image)
+		if err != nil {
+			return nil, fmt.Errorf("%s: %w", op, err)
+		}
+		courses = append(courses, &obj)
+	}
+
+	return courses, nil
+}

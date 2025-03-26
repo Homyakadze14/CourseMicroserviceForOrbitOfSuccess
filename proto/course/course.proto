@@ -5,18 +5,38 @@ option go_package = "../gen;coursev1";
 import "google/protobuf/empty.proto";
 
 service CourseService {
-    rpc Get(google.protobuf.Empty) returns (GetResponse); 
-    rpc Create(Course) returns (SuccessResponse);
-    rpc Update(Course) returns (SuccessResponse);
-    rpc Delete(DeleteRequest) returns (SuccessResponse); 
+    rpc GetAll(google.protobuf.Empty) returns (GetResponse); 
+    rpc Create(CreateResponse) returns (SuccessResponse);
 }
 
-message GetResponse {
-    repeated Course courses = 1;
+
+message CreateLesson {
+    string title = 1; 
+    string type = 2;
+    int32 duration = 3; 
+    string content = 4; 
+    string practice_type = 5;  
+    string task = 6; 
+}
+
+message CreateTheme {
+    string title = 1; 
+    repeated CreateLesson lessons = 2; 
+}
+
+message CreateResponse {
+    string title = 1;  
+    string description = 2;  
+    string full_description = 3;  
+    string work = 4;  
+    string difficulty = 5; 
+    int32 duration = 6;  
+    string image = 7;
+    repeated CreateTheme themes = 8;  
 }
 
 message Course {
-    optional int32 id = 1;  
+    int32 id = 1;
     string title = 2;  
     string description = 3;  
     string full_description = 4;  
@@ -24,40 +44,12 @@ message Course {
     string difficulty = 6; 
     int32 duration = 7;  
     string image = 8;
-    repeated Theme themes = 9;  
 }
 
-message Theme {
-    optional int32 id = 1;  
-    optional int32 course_id = 2;  
-    string title = 3; 
-    repeated Lesson lessons = 4; 
-}
-
-message Lesson {
-    optional int32 id = 1;  
-    optional int32 course_id = 2; 
-    optional int32 theme_id = 3;
-    string title = 4; 
-    string type = 5;
-    int32 duration = 6; 
-    optional bool completed = 7; 
-    string content = 8; 
-    string practice_type = 9;  
-    string task = 10; 
-}
-
-message PassedLesson {
-    int32 user_id = 1; 
-    int32 course_id = 2;
-    int32 theme_id = 3;
-    int32 lesson_id = 4;
+message GetResponse {
+    repeated Course courses = 1;
 }
 
 message SuccessResponse {
     bool success = 1;  
-}
-
-message DeleteRequest {
-    int32 course_id = 1; 
 }
