@@ -84,11 +84,26 @@ message GetCourseResponse {
     string difficulty = 6; 
     int32 duration = 7;  
     string image = 8;
-    repeated Theme theme = 9;
+    repeated Theme themes = 9;
 }
 
 message DeleteCourseRequest {
     int32 id = 1;
+}
+
+message UpdateLesson {
+    optional int32 id = 1;
+    string title = 2; 
+    string type = 3;
+    int32 duration = 4; 
+    string content = 5; 
+    string task = 7; 
+}
+
+message UpdateTheme {
+    optional int32 id = 1;
+    string title = 2; 
+    repeated UpdateLesson lessons = 3; 
 }
 
 message UpdateCourseRequest {
@@ -100,5 +115,5 @@ message UpdateCourseRequest {
     string difficulty = 6; 
     int32 duration = 7;  
     string image = 8;
-    repeated Theme theme = 9;
+    repeated UpdateTheme themes = 9;
 }

@@ -29,9 +29,9 @@ type CourseRepo interface {
 	GetThemes(ctx context.Context, cid int) ([]*entities.Theme, error)
 	GetLessons(ctx context.Context, cid, tid int) ([]*entities.Lesson, error)
 	DeleteCourse(ctx context.Context, id int) (err error)
-	UpdateCourse(ctx context.Context, obj *entities.Course) (err error)
-	UpdateTheme(ctx context.Context, obj *entities.Theme) (err error)
-	UpdateLesson(ctx context.Context, obj *entities.Lesson) (err error)
+	UpdateCourse(ctx context.Context, obj *entities.Course) (id int, err error)
+	UpdateTheme(ctx context.Context, obj *entities.Theme) (id int, err error)
+	UpdateLesson(ctx context.Context, obj *entities.Lesson) (id int, err error)
 }
 
 func NewCourseService(
@@ -192,7 +192,7 @@ func (s *CourseService) DeleteCourse(ctx context.Context, cid int) error {
 	return nil
 }
 
-func (s *CourseService) UpdateCourse(ctx context.Context, obj *entities.Course) error {
+func (s *CourseService) UpdateCourse(ctx context.Context, obj *entities.Course) (int, error) {
 	const op = "Course.UpdateCourse"
 
 	log := s.log.With(
@@ -200,17 +200,17 @@ func (s *CourseService) UpdateCourse(ctx context.Context, obj *entities.Course) 
 	)
 
 	log.Info("trying to update course")
-	err := s.crsRepo.UpdateCourse(ctx, obj)
+	id, err := s.crsRepo.UpdateCourse(ctx, obj)
 	if err != nil {
 		log.Error(err.Error())
-		return fmt.Errorf("%s: %w", op, err)
+		return -1, fmt.Errorf("%s: %w", op, err)
 	}
 	log.Info("successfully updated course")
 
-	return err
+	return id, err
 }
 
-func (s *CourseService) UpdateTheme(ctx context.Context, obj *entities.Theme) error {
+func (s *CourseService) UpdateTheme(ctx context.Context, obj *entities.Theme) (int, error) {
 	const op = "Course.UpdateTheme"
 
 	log := s.log.With(
@@ -218,17 +218,17 @@ func (s *CourseService) UpdateTheme(ctx context.Context, obj *entities.Theme) er
 	)
 
 	log.Info("trying to update theme")
-	err := s.crsRepo.UpdateTheme(ctx, obj)
+	id, err := s.crsRepo.UpdateTheme(ctx, obj)
 	if err != nil {
 		log.Error(err.Error())
-		return fmt.Errorf("%s: %w", op, err)
+		return -1, fmt.Errorf("%s: %w", op, err)
 	}
 	log.Info("successfully created theme")
 
-	return err
+	return id, err
 }
 
-func (s *CourseService) UpdateLesson(ctx context.Context, obj *entities.Lesson) error {
+func (s *CourseService) UpdateLesson(ctx context.Context, obj *entities.Lesson) (int, error) {
 	const op = "Course.UpdateLesson"
 
 	log := s.log.With(
@@ -236,12 +236,12 @@ func (s *CourseService) UpdateLesson(ctx context.Context, obj *entities.Lesson) 
 	)
 
 	log.Info("trying to update lesson")
-	err := s.crsRepo.UpdateLesson(ctx, obj)
+	id, err := s.crsRepo.UpdateLesson(ctx, obj)
 	if err != nil {
 		log.Error(err.Error())
-		return fmt.Errorf("%s: %w", op, err)
+		return -1, fmt.Errorf("%s: %w", op, err)
 	}
 	log.Info("successfully updated lesson")
 
-	return err
+	return id, err
 }
