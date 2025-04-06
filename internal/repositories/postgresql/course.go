@@ -173,3 +173,50 @@ func (r *CourseRepository) DeleteCourse(ctx context.Context, id int) (err error)
 
 	return nil
 }
+
+func (r *CourseRepository) UpdateCourse(ctx context.Context, obj *entities.Course) (err error) {
+	const op = "repositories.CourseRepository.UpdateCourse"
+
+	_, err = r.Pool.Exec(
+		ctx,
+		(`UPDATE course SET title=$1 AND description=$2 AND full_descritpion=$3 AND work=$4
+		AND difficulty=$5 AND duration=$6 AND image=$7`),
+		obj.Title, obj.Description, obj.FullDescription, obj.Work, obj.Difficulty, obj.Duration, obj.Image)
+
+	if err != nil {
+		return fmt.Errorf("%s: %w", op, err)
+	}
+
+	return nil
+}
+
+func (r *CourseRepository) UpdateTheme(ctx context.Context, obj *entities.Theme) (err error) {
+	const op = "repositories.CourseRepository.UpdateTheme"
+
+	_, err = r.Pool.Exec(
+		ctx,
+		"INSERT INTO theme(course_id, title) VALUES ($1, $2) ON CONFLICT(id) DO UPDATE SET coures_id=$1 AND title=$2",
+		obj.CourseID, obj.Title)
+
+	if err != nil {
+		return fmt.Errorf("%s: %w", op, err)
+	}
+
+	return nil
+}
+
+func (r *CourseRepository) UpdateLesson(ctx context.Context, obj *entities.Lesson) (err error) {
+	const op = "repositories.CourseRepository.UpdateLesson"
+
+	_, err = r.Pool.Exec(
+		ctx,
+		(`INSERT INTO lesson(course_id, theme_id, title, type, duration, content, task) VALUES ($1, $2, $3, $4, $5, $6, $7)
+		ON CONFLICT(id) DO UPDATE SET course_id=$1 AND theme_id=$2 AND title=$3 AND type=$4 AND duration=$5 AND content=$6 AND task=$7`),
+		obj.CourseID, obj.ThemeID, obj.Title, obj.Type, obj.Duration, obj.Content, obj.Task)
+
+	if err != nil {
+		return fmt.Errorf("%s: %w", op, err)
+	}
+
+	return nil
+}
