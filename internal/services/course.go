@@ -28,6 +28,7 @@ type CourseRepo interface {
 	GetCourse(ctx context.Context, id int) (*entities.Course, error)
 	GetThemes(ctx context.Context, cid int) ([]*entities.Theme, error)
 	GetLessons(ctx context.Context, cid, tid int) ([]*entities.Lesson, error)
+	DeleteCourse(ctx context.Context, id int) (err error)
 }
 
 func NewCourseService(
@@ -167,4 +168,23 @@ func (s *CourseService) GetLessons(ctx context.Context, cid, tid int) ([]*entiti
 	log.Info("lessons successfully geted")
 
 	return lessons, err
+}
+
+func (s *CourseService) DeleteCourse(ctx context.Context, cid int) error {
+	const op = "Course.DeleteCourse"
+
+	log := s.log.With(
+		slog.String("op", op),
+		slog.Int("cid", cid),
+	)
+
+	log.Info("trying to delete course")
+	err := s.crsRepo.DeleteCourse(ctx, cid)
+	if err != nil {
+		log.Error(err.Error())
+		return fmt.Errorf("%s: %w", op, err)
+	}
+	log.Info("course successfully deleted")
+
+	return nil
 }
