@@ -28,6 +28,7 @@ type Course interface {
 	GetCourse(ctx context.Context, id int) (*entities.Course, error)
 	GetThemes(ctx context.Context, cid int) ([]*entities.Theme, error)
 	GetLessons(ctx context.Context, cid, tid int) ([]*entities.Lesson, error)
+	DeleteCourse(ctx context.Context, cid int) error
 }
 
 func Register(gRPCServer *grpc.Server, course Course) {
@@ -183,5 +184,19 @@ func (s *serverAPI) Get(
 		Duration:        course.Duration,
 		Image:           course.Image,
 		Theme:           themesResp,
+	}, nil
+}
+
+func (s *serverAPI) Delete(
+	ctx context.Context,
+	in *coursev1.DeleteCourseRequest,
+) (*coursev1.SuccessResponse, error) {
+	err := s.course.DeleteCourse(ctx, int(in.Id))
+	if err != nil {
+		return nil, status.Error(codes.Internal, ErrInternalServerError)
+	}
+
+	return &coursev1.SuccessResponse{
+		Success: true,
 	}, nil
 }
