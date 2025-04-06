@@ -29,6 +29,9 @@ type CourseRepo interface {
 	GetThemes(ctx context.Context, cid int) ([]*entities.Theme, error)
 	GetLessons(ctx context.Context, cid, tid int) ([]*entities.Lesson, error)
 	DeleteCourse(ctx context.Context, id int) (err error)
+	UpdateCourse(ctx context.Context, obj *entities.Course) (err error)
+	UpdateTheme(ctx context.Context, obj *entities.Theme) (err error)
+	UpdateLesson(ctx context.Context, obj *entities.Lesson) (err error)
 }
 
 func NewCourseService(
@@ -187,4 +190,58 @@ func (s *CourseService) DeleteCourse(ctx context.Context, cid int) error {
 	log.Info("course successfully deleted")
 
 	return nil
+}
+
+func (s *CourseService) UpdateCourse(ctx context.Context, obj *entities.Course) error {
+	const op = "Course.UpdateCourse"
+
+	log := s.log.With(
+		slog.String("op", op),
+	)
+
+	log.Info("trying to update course")
+	err := s.crsRepo.UpdateCourse(ctx, obj)
+	if err != nil {
+		log.Error(err.Error())
+		return fmt.Errorf("%s: %w", op, err)
+	}
+	log.Info("successfully updated course")
+
+	return err
+}
+
+func (s *CourseService) UpdateTheme(ctx context.Context, obj *entities.Theme) error {
+	const op = "Course.UpdateTheme"
+
+	log := s.log.With(
+		slog.String("op", op),
+	)
+
+	log.Info("trying to update theme")
+	err := s.crsRepo.UpdateTheme(ctx, obj)
+	if err != nil {
+		log.Error(err.Error())
+		return fmt.Errorf("%s: %w", op, err)
+	}
+	log.Info("successfully created theme")
+
+	return err
+}
+
+func (s *CourseService) UpdateLesson(ctx context.Context, obj *entities.Lesson) error {
+	const op = "Course.UpdateLesson"
+
+	log := s.log.With(
+		slog.String("op", op),
+	)
+
+	log.Info("trying to update lesson")
+	err := s.crsRepo.UpdateLesson(ctx, obj)
+	if err != nil {
+		log.Error(err.Error())
+		return fmt.Errorf("%s: %w", op, err)
+	}
+	log.Info("successfully updated lesson")
+
+	return err
 }
