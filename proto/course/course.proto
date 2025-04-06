@@ -8,6 +8,7 @@ service CourseService {
     rpc GetAll(google.protobuf.Empty) returns (GetResponse); 
     rpc Get(GetCourseRequest) returns (GetCourseResponse); 
     rpc Create(CreateRequest) returns (SuccessResponse);
+    rpc Delete(DeleteCourseRequest) returns (SuccessResponse);
 }
 
 
@@ -54,7 +55,6 @@ message SuccessResponse {
     bool success = 1;  
 }
 
-
 message GetCourseRequest {
     int32 id = 1;
 }
@@ -84,4 +84,8 @@ message GetCourseResponse {
     int32 duration = 7;  
     string image = 8;
     repeated GetTheme theme = 9;
+}
+
+message DeleteCourseRequest {
+    int32 id = 1;
 }
