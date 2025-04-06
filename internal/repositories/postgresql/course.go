@@ -160,3 +160,16 @@ func (r *CourseRepository) GetLessons(ctx context.Context, cid, tid int) ([]*ent
 
 	return lessons, nil
 }
+
+func (r *CourseRepository) DeleteCourse(ctx context.Context, id int) (err error) {
+	const op = "repositories.CourseRepository.DeleteCourse"
+
+	_, err = r.Pool.Exec(ctx,
+		"DELETE FROM course WHERE id=$1", id)
+
+	if err != nil {
+		return fmt.Errorf("%s: %w", op, err)
+	}
+
+	return nil
+}
