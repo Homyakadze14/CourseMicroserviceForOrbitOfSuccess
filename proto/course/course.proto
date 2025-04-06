@@ -9,6 +9,7 @@ service CourseService {
     rpc Get(GetCourseRequest) returns (GetCourseResponse); 
     rpc Create(CreateRequest) returns (SuccessResponse);
     rpc Delete(DeleteCourseRequest) returns (SuccessResponse);
+    rpc Update(UpdateCourseRequest) returns (SuccessResponse);
 }
 
 
@@ -59,7 +60,7 @@ message GetCourseRequest {
     int32 id = 1;
 }
 
-message GetLesson {
+message Lesson {
     int32 id = 1;
     string title = 2; 
     string type = 3;
@@ -68,10 +69,10 @@ message GetLesson {
     string task = 7; 
 }
 
-message GetTheme {
+message Theme {
     int32 id = 1;
     string title = 2; 
-    repeated GetLesson lessons = 3; 
+    repeated Lesson lessons = 3; 
 }
 
 message GetCourseResponse {
@@ -83,9 +84,21 @@ message GetCourseResponse {
     string difficulty = 6; 
     int32 duration = 7;  
     string image = 8;
-    repeated GetTheme theme = 9;
+    repeated Theme theme = 9;
 }
 
 message DeleteCourseRequest {
     int32 id = 1;
+}
+
+message UpdateCourseRequest {
+    int32 id = 1;
+    string title = 2;  
+    string description = 3;  
+    string full_description = 4;  
+    string work = 5;  
+    string difficulty = 6; 
+    int32 duration = 7;  
+    string image = 8;
+    repeated Theme theme = 9;
 }

@@ -128,16 +128,16 @@ func (s *serverAPI) GetAll(
 	}, nil
 }
 
-func toThemeDTO(obj *entities.Theme, les []*coursev1.GetLesson) *coursev1.GetTheme {
-	return &coursev1.GetTheme{
+func toThemeDTO(obj *entities.Theme, les []*coursev1.Lesson) *coursev1.Theme {
+	return &coursev1.Theme{
 		Id:      int32(obj.ID),
 		Title:   obj.Title,
 		Lessons: les,
 	}
 }
 
-func toLessonDTO(obj *entities.Lesson) *coursev1.GetLesson {
-	return &coursev1.GetLesson{
+func toLessonDTO(obj *entities.Lesson) *coursev1.Lesson {
+	return &coursev1.Lesson{
 		Id:       int32(obj.ID),
 		Title:    obj.Title,
 		Type:     obj.Type,
@@ -161,13 +161,13 @@ func (s *serverAPI) Get(
 		return nil, status.Error(codes.Internal, ErrInternalServerError)
 	}
 
-	themesResp := make([]*coursev1.GetTheme, len(themes))
+	themesResp := make([]*coursev1.Theme, len(themes))
 	for i, theme := range themes {
 		lessons, err := s.course.GetLessons(ctx, course.ID, theme.ID)
 		if err != nil {
 			return nil, status.Error(codes.Internal, ErrInternalServerError)
 		}
-		lsResp := make([]*coursev1.GetLesson, len(lessons))
+		lsResp := make([]*coursev1.Lesson, len(lessons))
 		for j, lesson := range lessons {
 			lsResp[j] = toLessonDTO(lesson)
 		}
